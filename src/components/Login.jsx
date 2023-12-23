@@ -2,6 +2,7 @@ import { Button, TextField } from "@mui/material";
 import Box from "@mui/material/Box";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
+import styles from "./Login.module.css";
 
 function Login() {
   const [usernameUser, setUsernameUser] = useState("");
@@ -59,11 +60,14 @@ function Login() {
   }
 
   return (
-    <div>
+    <div dir="rtl">
       <Box
         component="form"
         sx={{
           "& .MuiTextField-root": { m: 1, width: "25ch" },
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
         }}
         autoComplete="off"
       >
@@ -76,6 +80,7 @@ function Login() {
           type="password"
           onChange={(e) => setPasswordUser(e.target.value)}
         />
+
         <Button variant="text" onClick={loginHandler}>
           ورود
         </Button>

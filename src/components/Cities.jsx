@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
+import styles from "./Cities.module.css";
+import { Box } from "@mui/material";
 
 function Cities() {
   const token = localStorage.getItem("token");
@@ -63,7 +65,7 @@ function Cities() {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div>در حال بار گذاری</div>;
   }
 
   if (error) {
@@ -71,28 +73,39 @@ function Cities() {
   }
 
   return (
-    <div>
-      <Autocomplete
-        disablePortal
-        id="provinces-autocomplete"
-        options={provinces}
-        getOptionLabel={(option) => option.name}
-        value={selectedProvince}
-        onChange={handleProvinceChange}
-        style={{ width: 300 }}
-        renderInput={(params) => <TextField {...params} label="Provinces" />}
-      />
+    <div dir="rtl">
+      <Box
+        sx={{
+          "& .MuiTextField-root": { m: 1, width: "25ch" },
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}
+      >
+        <Autocomplete
+          disablePortal
+          id="provinces-autocomplete"
+          options={provinces}
+          getOptionLabel={(option) => option.name}
+          value={selectedProvince}
+          onChange={handleProvinceChange}
+          style={{ width: 300 }}
+          renderInput={(params) => <TextField {...params} label="استان" />}
+        />
 
-      <Autocomplete
-        disablePortal
-        id="states-autocomplete"
-        options={filteredStates}
-        getOptionLabel={(option) => option.name}
-        value={selectedState}
-        onChange={handleStateChange}
-        style={{ width: 300 }}
-        renderInput={(params) => <TextField {...params} label="States" />}
-      />
+        <Autocomplete
+          disablePortal
+          id="states-autocomplete"
+          options={filteredStates}
+          getOptionLabel={(option) => option.name}
+          value={selectedState}
+          onChange={handleStateChange}
+          style={{ width: 300 }}
+          renderInput={(params) => (
+            <TextField {...params} label="شهر" className="" />
+          )}
+        />
+      </Box>
     </div>
   );
 }
