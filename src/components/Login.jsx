@@ -1,13 +1,13 @@
 import { Button, TextField } from "@mui/material";
 import Box from "@mui/material/Box";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 import styles from "./Login.module.css";
 
 function Login() {
   const [usernameUser, setUsernameUser] = useState("");
   const [passwordUser, setPasswordUser] = useState("");
-  const navigate = useNavigate(); // useNavigate hook for redirection
+  const navigate = useNavigate();
 
   useEffect(() => {
     const controller = new AbortController();
@@ -39,7 +39,7 @@ function Login() {
         console.log(data);
         const token = data.token;
         localStorage.setItem("token", token);
-        navigate("/cities"); // Redirect to the "/cities" route
+        navigate("/cities");
       } catch (error) {
         if (error.name === "AbortError") {
           console.log("Fetch aborted");
@@ -56,7 +56,6 @@ function Login() {
 
   function loginHandler(e) {
     e.preventDefault();
-    // Call authenticateUser here or add your additional login logic if needed
   }
 
   return (
