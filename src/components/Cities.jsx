@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import TextField from "@mui/material/TextField";
+import Autocomplete from "@mui/material/Autocomplete";
 
 function Cities() {
   const token = localStorage.getItem("token");
@@ -8,10 +10,11 @@ function Cities() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const url = "http://rezayari.ir:5050/CityAndProvince/GetProvince";
+  const [selectedProvince, setSelectedProvince] = useState(null);
+  const [selectedState, setSelectedState] = useState(null);
 
-    const fetchDataProvinces = async () => {
+  useEffect(() => {
+    const fetchData = async (url, setter) => {
       try {
         const response = await fetch(url, {
           method: "GET",
@@ -22,11 +25,11 @@ function Cities() {
         });
 
         if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+          throw new Error(` ${response.status}: خطا با کد`);
         }
 
         const data = await response.json();
-        setProvinces(data);
+        setter(data);
         setLoading(false);
       } catch (error) {
         setError(error.message);
@@ -34,36 +37,30 @@ function Cities() {
       }
     };
 
-    fetchDataProvinces();
+    const provincesUrl = "http://rezayari.ir:5050/CityAndProvince/GetProvince";
+    const statesUrl = "http://rezayari.ir:5050/CityAndProvince/GetCity";
+
+    fetchData(provincesUrl, setProvinces);
+    fetchData(statesUrl, setStates);
   }, [token]);
-  useEffect(() => {
-    const urlStates = "http://rezayari.ir:5050/CityAndProvince/GetCity";
 
-    const fetchDatastates = async () => {
-      try {
-        const response = await fetch(urlStates, {
-          method: "GET",
-          headers: {
-            accept: "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+  const filteredStates = states.filter(
+    (state) => !selectedProvince || state.provinceId === selectedProvince.id
+  );
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
+  const handleProvinceChange = (event, value) => {
+    setSelectedProvince(value);
 
-        const data = await response.json();
-        setStates(data);
-        setLoading(false);
-      } catch (error) {
-        setError(error.message);
-        setLoading(false);
-      }
-    };
+    setSelectedState(null);
+  };
 
-    fetchDatastates();
-  }, [token]); // Empty dependency array to run the effect once on mount
+  const handleStateChange = (event, value) => {
+    setSelectedState(value);
+
+    setSelectedProvince(
+      provinces.find((province) => province.id === value.provinceId)
+    );
+  };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -72,25 +69,30 @@ function Cities() {
   if (error) {
     return <div>Error: {error}</div>;
   }
+
   return (
     <div>
-      {" "}
-      <div>
-        <h2>List of Provinces:</h2>
-        <ul>
-          {provinces.map((province) => (
-            <li key={province.id}>{province.name}</li>
-          ))}
-        </ul>
-      </div>
-      <div>
-        <h2>List of Provinces:</h2>
-        <ul>
-          {states.map((state, i) => (
-            <li key={i}>{state.name}</li>
-          ))}
-        </ul>
-      </div>
+      <Autocomplete
+        disablePortal
+        id="provinces-autocomplete"
+        options={provinces}
+        getOptionLabel={(option) => option.name}
+        value={selectedProvince}
+        onChange={handleProvinceChange}
+        style={{ width: 300 }}
+        renderInput={(params) => <TextField {...params} label="Provinces" />}
+      />
+
+      <Autocomplete
+        disablePortal
+        id="states-autocomplete"
+        options={filteredStates}
+        getOptionLabel={(option) => option.name}
+        value={selectedState}
+        onChange={handleStateChange}
+        style={{ width: 300 }}
+        renderInput={(params) => <TextField {...params} label="States" />}
+      />
     </div>
   );
 }
