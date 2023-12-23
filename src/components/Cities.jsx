@@ -69,7 +69,7 @@ function Cities() {
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <div>خطا {error} </div>;
   }
 
   return (

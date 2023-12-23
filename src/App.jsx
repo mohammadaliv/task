@@ -7,6 +7,7 @@ import Login from "./components/Login";
 import Cities from "./components/Cities";
 import { prefixer } from "stylis";
 import createCache from "@emotion/cache";
+import NotFound from "./components/NotFound";
 
 const theme = createTheme({
   direction: "rtl", // Both here and <body dir="rtl">
@@ -18,13 +19,15 @@ const cacheRtl = createCache({
 });
 
 function App() {
+  const auth = localStorage.getItem("token");
   return (
     <CacheProvider value={cacheRtl}>
       <ThemeProvider theme={theme}>
         <BrowserRouter>
           <Routes>
+            <Route path="*" element={<NotFound />} />
             <Route index element={<Login />} />
-            <Route path="cities" element={<Cities />} />
+            {auth ? <Route path="cities" element={<Cities />} /> : ""}
           </Routes>
         </BrowserRouter>
       </ThemeProvider>
